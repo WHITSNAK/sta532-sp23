@@ -1,0 +1,137 @@
+\documentclass[11pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[letterpaper, margin=0.5in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage[font=scriptsize]{caption}
+\usepackage{subcaption}
+\usepackage{xcolor}
+
+\newtheorem{lemma}{Lemma}
+\newcommand{\indep}{\perp \!\!\! \perp}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    texcl=true,
+    mathescape=true,
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+\graphicspath{ {.} }
+\captionsetup{justification=raggedright, singlelinecheck=false}
+
+\author{Ryan Tang}
+\title{STA 532 HW 1}
+\date{January 22nd 2023}
+
+\begin{document}
+\maketitle
+
+\section{Ex 1}
+\paragraph{(a)}
+Given the uniform triangle, we can write $p(X|Y)$ with the following relations.
+\begin{align*}
+    p(x, y) &= 2 \\
+    p(x) &= \int_0^{1-y} 2 dx = -2y + 2 \\
+    p(x|y) &= \frac{p(x, y)}{p(y)} = \frac{1}{1-y} \\
+           &\thicksim U(y, 1) \\
+    E[x|y] &= \frac{1+y}{2}
+\end{align*}
+In other words, the $x|y$ follows a uniform distribution.
+
+\paragraph{(b)}
+Now, let $z$ be the angle the $(x, y)$ creates at the origin with respect to the x-axis. The $p(x|z)$ follows a similar argument since the entire triangle has a uniform distribution. However, this time, the conditional is not on a horizontal line but a full hypotenuse $h$ created by the angle $Z$. In math, we can write the relationship under polar coordinates.
+\begin{align*}
+    F(x, z) &= \frac{\text{area(small triangle form by (x,z))}}{\text{area(large triangle)}} \\
+        &= \frac{\frac{1}{2}x^2 tan(z)}{1/2} = x^2 \tan(z) \\
+    p(x, z) &= \frac{\partial^2}{\partial z \partial x} F(x, z) = 2x \sec^2(z) \\
+    p(z) &= \int_0^1 p(x, z) dx = \sec^2(z) \\
+    p(x|z) &= \frac{p(x, z)}{p(z)} = 2x
+\end{align*}
+
+\paragraph{(c)}
+Lastly, assuming the conditionals distribution lands on the x-axis, $Y=0$ and $Z=0$.
+\begin{align*}
+    p(x|Y=0) &= 1 \\
+    p(x|Z=0) &= 2x
+\end{align*}
+The two conditionals point to the same x-axis, but their densities differ. One is uniform, and the other is a function of $X$. One thing I can think of that constructs such discrepancy is the change in the coordinate system. $Z$ is in radius, but $Y$ is not; hence, the conditional density is not invariant to the change of coordinate system.
+
+\newpage
+\section{Ex 2}
+\paragraph{(a)} Here, we prove the bias-variance decomposition.
+\begin{lemma}$E[X^2] = V[X] + E[X]^2$\end{lemma}
+\begin{align*}
+    E[(y-a)^2] &= E[y^2] + E[a^2] - 2aE[y] \\
+        &= V[y] + a^2 + E[y]^2 - 2aE[y] \\
+        &= V[y] + (E[y] - a)^2
+\end{align*}
+
+\paragraph{(b)} Then, using the bias-variance decomposition, we can easily prove that the mean is the minimizer for the square-loss function.
+\begin{align*}
+    \arg \mathop{\min}_a E[(y-a)^2]
+        &= \arg \mathop{\min}_a V[y] + (E[y] - a)^2 \\
+        &= \arg \mathop{\min}_a (E[y] - a)^2
+\end{align*}
+The equation $(E[y] - a)^2$ is minimized when $a = E[y]$.
+
+\paragraph{(c)} We can also use derivative to directly solve for $a$ by setting the derivative to 0. However, a couple of conditions need to be met to be rigorous. Let $\psi(a) = E[g(y, a)]$ and $h(y, a) = \frac{\partial}{\partial a} g(y, a)$. Also, we define a positive function that is finite, $\bar{h}(y, a)$ and $E[\bar{h}(y, a)] < \infty$. We can see that to take the derivative properly, we must meet two conditions.
+\begin{align*}
+    \frac{\partial}{\partial a} E[(y-a)^2]
+        &= \lim_{\Delta \rightarrow 0} \frac{1}{\Delta}\left[ E[(y-(a+\Delta)^2] - E(y-a)^2] \right] \\
+        &= \lim_{\Delta \rightarrow 0} E\left[ \frac{(y-(a+\Delta)^2 - (y-a)^2}{\Delta} \right] \\
+        &= \lim_{\Delta \rightarrow 0} E\left[ \frac{\partial}{\partial a} g(y, a') \right] \\
+        &= \lim_{\Delta \rightarrow 0} E\left[ h(y, a') \right]
+\end{align*}
+Hence, we can see the derivative of $g(y, a)$ has to exist to make the above operations work. And, $h(y, a')$ must be finite and bounded by a real number so the expectation will not blow up, $|h(y, a')| < \bar{h}(y, a)$.
+
+\paragraph{(d)} In this section, we proof the median is the minimizer for the absolute-loss function. We will use the following Leibniz integral rule extensively later.
+\begin{lemma}$
+    \frac{d}{dx} \int_{a(x)}^{b(x)} f(x, t) dt
+        = f(x, b(x)) \frac{d}{dx}b(x) - f(x, a(x))\frac{d}{dx}a(x) + \int_{a(x)}^{b(x)} \frac{\partial}{\partial x} f(x, t) dt
+$\end{lemma}
+\begin{align*}
+    E[|y-a|] &= \int_{-\infty}^a (y-a) p(y) dy - \int_{a}^{\infty} (y-a) p(y) dy \\
+        &= -a \int_{-\infty}^a p(y) dy + a \int_{a}^{\infty} p(y) dy \\
+    \frac{\partial}{\partial a} E[|y-a|] &= - \int_{-\infty}^a p(y) dy + \int_{a}^{\infty} p(y) dy = 0 \\
+        \int_{-\infty}^a p(y) dy &= \int_{a}^{\infty} p(y) dy \\
+        P[Y < a] &= P[Y > a]
+\end{align*}
+We know the probability of $Y$ sums up to 1; hence, $P[Y<a] = p[Y>a] = 0.5$, and $a$ must be the median $y_{1/2}$.
+
+\paragraph{(e)}Now, we generalize the argument on the absolute-loss function to the quantile-loss function that $y_p$ is the minimizer for
+$\psi(a) = E[(y-a)(p - I(y<a)], p \in (0,1)$, where $y_p$ is the p-th quantile of P, $P[Y<y_p] = p$.
+\begin{align*}
+    \psi(a) &= (p-1) \int_{-\infty}^{a} (y-a) p(y) dy + p \int_{a}^{\infty} (y-a) p(y) dy \\
+    \frac{\partial}{\partial a} \psi(a)
+        &= (p-1) \left[(a-a)p(a) - \int_{-\infty}^{a} p(y) dy \right] + p \left[-(a-a)p(a) - \int_{a}^{\infty} p(y) dy \right] \\
+        &= (1-p) \int_{-\infty}^{a} p(y) dy - p \int_{a}^{\infty} p(y) dy \\
+        &= (1-p) P[Y<a] - p ( 1- P[Y<a]) \\
+    P[Y<a] &= p
+\end{align*}
+Hence, $a$ has to be $y_p$.
+
+\end{document}

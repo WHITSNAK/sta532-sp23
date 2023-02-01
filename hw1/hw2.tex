@@ -1,0 +1,148 @@
+\documentclass[11pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[letterpaper, margin=0.5in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage[font=scriptsize]{caption}
+\usepackage{subcaption}
+\usepackage{xcolor}
+
+\newtheorem{lemma}{Lemma}
+\newcommand{\indep}{\perp \!\!\! \perp}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    texcl=true,
+    mathescape=true,
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+\graphicspath{ {.} }
+\captionsetup{justification=raggedright, singlelinecheck=false}
+
+\author{Ryan Tang}
+\title{STA 532 HW 2}
+\date{January 29th 2023}
+
+\begin{document}
+\maketitle
+
+\section{Ex 3}
+We are given the following.
+\begin{align*}
+    X_i &\thicksim Ga(a_i, 1) \\
+    T = \sum_i^k X_i &\thicksim Ga(\sum_i a_i, 1) \\
+    p(x) &= \frac{1}{\prod_i \Gamma(a_i)} exp(-\sum_i x_i) \prod_i x_i^{a_i-1} \\
+    p(u, t) &= \frac{1}{\prod_i \Gamma(a_i)} t^{\sum_i a_i - 1} e^{-t} \prod_i u_i^{a_i-1}
+\end{align*}
+\paragraph{(c)} T is $\indep$ U and U follows a Dirichlet(a) distribution
+
+One note, we know $u_i = x_i / t$; hence, $\sum_i u_i = 1$. Therefore, $p(u_1, u_2, ... u_k) = p(u_1, u_2, ... u_{k-1}) = p(u)$ because knowing one less of the element still gives us the full information of the joint. Then we can see $p(u, t)$ can be fully decomposed by the following; hence the independence. 
+\begin{align*}
+    p(t) &= \frac{1}{\Gamma(\sum_i a_i)} t^{\sum_i a_i -1} e^{-t} \\
+         &\thicksim Ga(\sum_i a_i, 1) \\
+    p(u) &= \frac{\Gamma(\sum_i a_i)}{\prod_i \Gamma(a_i)} \prod_i u_i^{a_i-1} \\
+         &\thicksim Dir(a) \\
+    p(u, t) &= p(t) p(u)
+\end{align*}
+
+\paragraph{(d)} The joint density of any subset of U with the sum of remaining still forms a Dirichlet distribution.
+$$
+(U_{i1}, ... U_{im}, \sum_{j\notin I} U_j) \thicksim Dir(a_{i1}, ... a_{im}, \sum_{j\notin I} a_j)
+$$
+It is trivial to see straight from the density $p(u)$. Any subset of $\{u_{im}\}$ can be collapsed through the product, and the density would still hold.
+
+\paragraph{(e)} Two additional claims
+
+For (i), we already see the distribution of $T$ follows a gamma distribution $Ga(\sum_i a_i, 1)$ with each component $X_i \thicksim Ga(a_i, 1)$. The logic follows if we recognize that an exponential is equivalent to a gamma distribution $Exp(\lambda) = Ga(1, \lambda)$. Then given $Y_i \thicksim_{iid} Exp(\lambda)$, $Y_1 + ... + Y_n$ just becomes a gamma distribution $Ga(n, \lambda)$.
+
+For (ii), we can rewrite $U = \frac{X}{X+Y}$ and $T = X + Y$. And we already have proof in section (c) that $U$ and $T$ are independent.
+
+\section{Ex 4}
+\paragraph{(b)} MGF of Bernoulli(p)
+\begin{align*}
+    p(x) &= p^x(1-p)^(1-x) \\
+    E[e^{tx}] &= pe^t + (1-p)e^{t0} \\
+        &= pe^t + 1 - p
+\end{align*}
+\paragraph{(c)} MGF of Binomial(n, p)
+\begin{align*}
+    p(x) &= {n \choose x} p^x (1-p)^{n-x} \\
+    E[e^{tx}] &= \sum_{x=0}^n e^{tx} {n \choose x} p^x (1-p)^{n-x} \\
+        &= \sum_{x=0}^n {n \choose x} (pe^t)^x (1-p)^{n-x} \\
+        &= (pe^t + 1 - p)^n
+\end{align*}
+\paragraph{(e)} Sum of Two Independent Poisson is Poisson
+\begin{align*}
+    X &\thicksim Poisson(\lambda), Y \thicksim Poisson(\mu), X \indep Y \\
+    E[e^{tx}] &= \sum_{x=0}^{\infty} e^{tx} \frac{\lambda^x}{x!} e^{-\lambda} \\
+        &= e^{-\lambda} \sum_{x=0}^{\infty} \frac{{(\lambda e^t)}^x}{x!} \\
+        &= e^{-\lambda} e^{\lambda e^t} \\
+        &= e^{\lambda (e^t - 1)} \\
+    E[e^{t(x+y)}] &= \int \int e^{t(x+y)} p(x) p(y) dx dy \\
+        &= \int e^{tx} p(x) dx \int e^{ty} p(y) dy \\
+        &= E[e^{tx}]E[e^{ty}] \\
+        &= \exp[{(\lambda + \mu) (e^t - 1)}] \\
+    X+Y &\thicksim Poisson(\lambda + \mu)
+\end{align*}
+\paragraph{(f)} Poisson in conditional and marginal
+\begin{align*}
+    N &\thicksim Poisson(\lambda), Y|N \thicksim Binomial(n, p) \\
+    E[e^{tY}] &= E[E[e^{tY}|N]] \\
+        &= E[(pe^t + 1 - p)^N] \\
+        &= \sum_{n=0}^{\infty} (pe^t + 1 - p)^n \frac{\lambda^n}{n!} e^{-\lambda} \\
+        &= e^{-\lambda} \sum_{n=0}^{\infty} \frac{[(pe^t + 1 - p)\lambda]^n}{n!} \\
+        &= \exp{[\lambda(pe^t+1-p-1]} \\
+        &= \exp{[\lambda p (e^t - 1)]} \\
+      Y &\thicksim Poisson(\lambda p)
+\end{align*}
+
+\section{Ex 5}
+\paragraph{(a)}Matrix Multiplication in Variance
+\begin{align*}
+    Var(AX) &= E[(AX - E[AX])(AX - E[AX])^{\intercal}] \\
+        &= E[A(X - E[X])(X - E[X])^{\intercal}A^{\intercal}] \\
+        &= A E[(X - E[X])(X - E[X])^{\intercal}] A^{\intercal} \\
+        &= A Var(X) A^{\intercal}
+\end{align*}
+\paragraph{(b)Trace and Expectation}
+\begin{align*}
+    E[trace(Z)] &= trace[E[Z]] \\
+        &= E[\sum_{i=j} Z_{ij}] \\
+        &= \sum_{i=k} E[Z_ij] \\
+        &= trace[E[Z]]
+\end{align*}
+\paragraph{(c)L2-norm and trace of variance}
+\begin{align*}
+    E[X] &= 0 \\
+    trace[Var[X]] &= trace[E[(X-E[X])(X-E[X])^{\intercal}]] \\
+        &= trace[E[XX^{\intercal}]] \\
+        &= E[trace[XX^\intercal]] \\
+        &= E[\sum_i X_{i}^2] \\
+        &= E[||X||^2_2]
+\end{align*}
+
+\end{document}
