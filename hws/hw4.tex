@@ -1,0 +1,225 @@
+\documentclass[11pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[letterpaper, margin=0.5in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage[font=scriptsize]{caption}
+\usepackage{subcaption}
+\usepackage{xcolor}
+
+\newtheorem{lemma}{Lemma}
+\newcommand{\indep}{\perp \!\!\! \perp}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    texcl=true,
+    mathescape=true,
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+\graphicspath{ {../statics/} }
+\captionsetup{justification=raggedright, singlelinecheck=false}
+
+\author{Ryan Tang}
+\title{STA 532 HW 4}
+\date{February 12th 2023}
+
+\begin{document}
+\maketitle
+
+\section{Ex 10}
+Given the assumptions $X_1 \dots X_n$ iid random samples originated from the probability law $P$ on $\mathbb{R}$, and the $E[X^4] <\infty$ is finite. The sample variances $s^2_n = \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X_n})^2$. The sample mean, of course, is $\overline{X_n} = \frac{1}{n} \sum_{i=1}^n X_i$. We proof the following quantifies.
+\paragraph{(a)} $s^2_n = \overline{X^2_n} - \overline{X_n}^2$
+\begin{proof}\begin{align*}
+    s^2_n &= \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X_n})^2 \\
+        &= E[(X_i - \overline{X_n})^2] \\
+        &= E[X_i^2 + \overline{X}^2 - 2X_i\overline{X}] \\
+        &= \overline{X^2_n} + \overline{X_n}^2 - 2\overline{X_n}^2 \\
+        &= \overline{X^2_n} - \overline{X_n}^2
+\end{align*}\end{proof}
+
+\paragraph{(b)} $s^2_n \xrightarrow{p} \sigma^2$, given $E[X] = 0$ and $V(X) = \sigma^2$.
+\begin{proof}\begin{align*}
+    s^2_n \xrightarrow{p} \sigma^2 &= \lim_{n \rightarrow \infty} P[|s^2_n - \sigma^2| > \epsilon] = 0 \\
+    P[|s^2_n - \sigma^2| > \epsilon] &\leq \frac{V[s^2_n]}{\epsilon^2} \\
+        &= \frac{\frac{1}{n^2}V[\sum_i X_i^2]}{\epsilon^2} \\
+        &= \frac{V[X^2]}{n\epsilon^2} \\
+        &= \frac{E[X^4]}{n\epsilon^2} \\
+    \lim_{n \rightarrow \infty} \frac{E[X^4]}{n\epsilon^2} &= 0 \quad\quad \text{given}\, E[X^4] < \infty \\
+    \text{hence}\quad \lim_{n \rightarrow \infty} &P[|s^2_n - \sigma^2| > \epsilon] = 0 \\
+    \text{implies}\quad s^2_n &\xrightarrow{p} \sigma^2
+\end{align*}\end{proof}
+
+\newpage
+\paragraph{(c)}$\sqrt{n}(s^2_n - \sigma^2) \Rightarrow N(0, V[X^2])$.
+
+To prove this, we first need to prove the central limit theorem by writing $Z_i = X_i^2 - \sigma^2$ that iid $\forall i$ and a unique MGF, $M_{Z_i}(t)$. We also have the knowledge that its first and second moment finite, $E[Z_i] = 0$, $V[Z_i] = V[X_i^2 - \sigma^2] = V[X_i^2] = E[X^4] = V[X^2]$. Lastly, Gaussian has the MGF $\exp(\mu t + \frac{1}{2} \sigma^2 t^2)$.
+\begin{proof}\begin{align*}
+    M_{Z_i}(t) &= E[e^{tZ_i}] \\
+        &= M_{Z_i}(0) + tM^{(1)}_{Z_i}(0) + \frac{t^2}{2!}M^{(1)}_{Z_i}(0) + o(t^3) \\
+        &= 1 + \frac{1}{2}t^2 V[X^2] + o(t^3) \\
+    M_{\frac{Z_1+\dots+Z_n}{\sqrt{n}}}(t) &= {M_{Z_i} \left( \frac{t}{\sqrt{n}} \right)}^n \\
+        &= \left[ 1 + \frac{V[X^2] t^2}{2n} + o(t^3) \right]^n \\
+    \lim_{n \rightarrow \infty} \left[ 1 + \frac{V[X^2] t^2}{2n} + o(t^3) \right]^n &= \exp(\frac{1}{2} V[X^2] t^2) \\
+    \frac{1}{\sqrt{n}}\sum_i Z_i &\thicksim N(0, V[X^2]) \\
+    s^2_n &\thicksim N(\sigma^2, nV[X^2]) \\
+    \sqrt{n}(s^2_n - \sigma^2) &\thicksim N(0, V[X^2])
+\end{align*}\end{proof}
+
+\paragraph{(d)}
+Even $E[X_i] \neq 0$ will not alter the results of (b) and (c) because variances are invariant to any subtraction or addition to a constant.
+
+\section{Ex 11}
+We have $(X, Y) \thicksim P \in R^2$, and $X, Y \in L^2(P)$. We also defined the slope and intercept $\beta = \frac{\sigma_2}{\sigma_1}\rho$ and $\alpha = \mu_2 - \beta \mu_1$, where $E[X] = \mu_1, E[Y] = \mu_2, Var[X]=\sigma^2_1, Var[Y] = \sigma^2_2, \rho = Corr(X, Y)$
+\paragraph{(a)} X and Z are uncorrelated
+\begin{proof}\begin{align*}
+    E[Z] &= E[Y- \alpha - \beta X] = \mu_2 - E[\mu_2 - \beta \mu_1] - \beta \mu_1 \\
+        &= \mu_2 - \mu_2 + \beta \mu_1 - \beta \mu_1 = 0 \\
+    Cov(X, Y) &= \sigma_1 \sigma_2 Corr(X, Y) = \sigma_1 \sigma_2 \rho \\
+    Var[Z] &= Cov(Y-\alpha-\beta X, Y-\alpha-\beta X) \\
+        &= \beta^2 \sigma^2_1 + \sigma^2_2 - 2\beta Cov(X, y) \\
+        &= \frac{\sigma_2^2}{\sigma^2_1}\rho^2 \sigma^2_1 + \sigma^2_2 - 2\frac{\sigma_2}{\sigma_1}\rho \sigma_1 \sigma_2 \rho \\
+        &= \sigma_2^2 \rho^2 + \sigma_2^2 - 2\sigma^2_2 \rho^2 \\
+        &= \sigma^2_2 - \sigma^2_2 \rho^2 = \sigma^2_2 (1-\rho^2) \\
+    Cov(X, Z) &= Cov(X, Y - \alpha - \beta X) \\
+        &= Cov(X, y) - \beta \sigma^2_1 = \sigma_1 \sigma_2 \rho - \frac{\sigma_2}{\sigma_1}\sigma_1^2 \rho = 0\\
+\end{align*}\end{proof}
+
+\paragraph{(b)} Assuming $X \indep Z$ then we have the following.
+\begin{align*}
+    E[Y|X] &= E[Z + \alpha + \beta X | X] \\
+        &= E[Z + \alpha + \beta X] \\
+        &= \alpha + \beta \mu_1
+\end{align*}
+We can see for an example in the bivariate normal $(X, Y) \thicksim N(0, \Sigma)$ and defined $Z = Y - \alpha - \beta X$. Because the relationship between X and Y is fully linear, $Z \indep X$ is a given.
+
+\paragraph{(c)}
+Here we show the linear estimator minimizes the square loss under any bivariate distribution.
+\begin{proof}\begin{align*}
+    \psi(a, b) &= E[(Y - \alpha - \beta X)^2] \\
+    \frac{\partial}{\partial a} \psi &= E[-2(Y-a-bX)] \\
+        0 &= E[-2Y +2a +2bX] = -\mu_2 + a + b\mu_1 \\
+        a &= \mu_2 - b\mu_1 \\
+    \frac{\partial}{\partial b} \psi &= E[-2X(Y-a-bX)] \\
+        0 &= E[-2XY + 2aX + 2bX^2] \\
+          &= -E[XY] + aE[X] + bE[X^2] \\
+          &= -\sigma_1\sigma_2 \rho - \mu_1\mu_2 + a \mu_1 + b\sigma_1^2 + b\mu_1^2 \\
+          &= b\sigma_1^2 - \sigma_1\sigma_2 \rho \\
+        b &= \frac{\sigma_2}{\sigma_1} \rho
+\end{align*}\end{proof}
+Hence we can conclude $a = \alpha, b = \beta$
+
+\paragraph{(d)} $\rho$'s limiting distribution. First, we define the following.
+\begin{align*}
+    R_n &= \frac{S_{n, xy}}{S_{n,x}S_{n,y}} \\
+    S_{n, xy} &= \frac{1}{n} \sum_i (X_i - \overline{X_n}) (Y_i - \overline{Y_n}) \\
+    S^2_{n, x} &= \frac{1}{n} \sum_i (X_i - \overline{X_n})^2 \\
+    S^2_{n, y} &= \frac{1}{n} \sum_i (Y_i - \overline{Y_n})^2 \\
+\end{align*}
+Using the weak law of large numbers, the above 3 sampling variances will converge in probability to the following constants.
+\begin{align*}
+    S_{n, xy} &\xrightarrow{p} \sigma_x \sigma_y \rho \\
+    S^2_{n, x} &\xrightarrow{p} \sigma_x^2 \\
+    S^2_{n, y} &\xrightarrow{p} \sigma_y^2 \\
+\end{align*}
+Then, we can apply the Slutsky theorem on the sampling covariance because of the convergence to the constant property.
+\begin{align*}
+    \frac{S_{n, xy}}{S_{n, x}S_{n, y}} &\xrightarrow{p} \frac{\sigma_x \sigma_y \rho}{\sigma_x \sigma_y} \\
+    R_n &\xrightarrow{p} \rho
+\end{align*}
+It is obvious to say, using the CMT theorem, that $E[R_n] &\xrightarrow{p} E[\rho] = \rho$. To continue, we know $R_n$ is a function of $w = (X, Y, X^2, Y^2, XY)^{\intercal}$. By the central limit theory, we have the following.
+\begin{align*}
+    E[w] &= \mu = (E[X], E[Y], E[X^2], E[Y^2], E[XY])^{\intercal} \\
+    \overline{w} &= \frac{1}{n} \sum_i w_i \\
+    \sqrt{n}(\overline{w} - \mu) &\Rightarrow N(0, \Sigma) \\
+    \rho &= g(\mu) = \frac{E[XY] - E[X]E[Y]}{\sqrt{(E[X^2]-E[X]^2)(E[Y^2]-E[Y]^2)}}
+\end{align*}
+Lastly, we apply the Delta theorem using the function $g(\mu)$ under the assumption $(X, Y) \in L^2(P)$. We have
+\begin{align*}
+    \sqrt{n}(g(\bar{w})-g(\mu)) &\Rightarrow N(0, \Dot{g}(\mu)^\intercal \sigma \Dot{g}(\mu)) \\
+    \sqrt{n}(R_n - \rho) &\Rightarrow N(0, \tau^2)
+\end{align*}
+$\tau^2$ is just some constant variances.
+
+\paragraph{(e)}
+We have the variance matrix for $w$ and the two transformation functions as shown below.
+\begin{align*}
+    Var[W] &= \Sigma =
+      \begin{bmatrix}
+        1 & \rho & 0 & 0 & 0 \\
+        \rho & 1 & 0 & 0 & 0 \\
+        0 & 0 & 2 & 2\rho^2 & 2\rho \\
+        0 & 0 & 2\rho^2 & 2 & 2\rho \\
+        0 & 0 & 2\rho & 2\rho & \rho^2+1 \\
+      \end{bmatrix} \\
+    g(E[W]) &=
+      \begin{bmatrix}
+        E[XY] - E[X]E[Y] \\
+        E[X^2] - E[X]^2 \\
+        E[Y^2] - E[Y]^2 \\
+      \end{bmatrix} \\
+    h(g(E[W])) &= \frac{E[XY] - E[X]E[Y]}{\sqrt{(E[X^2]-E[X]^2)(E[Y^2]-E[Y]^2)}} \\
+\end{align*}
+Working out the Jacobian for both $g(.)$ and $h(.)$ and doing the hairy calculation, we have the following.
+\begin{align*}
+    \Dot{h}(.)^{\intercal}\Dot{g}(.)^{\intercal} \Sigma \Dot{g}(.)\Dot{h}(.)
+        &= \rho^4 + \frac{1}{2}\rho^3 -2\rho^2 - \frac{1}{2}\rho + 1 \\
+        &= \tau^2 
+\end{align*}
+
+\newpage
+\section{Ex 12}
+Here we have $U_1 \dots U_n \thicksim \text{Uniform}(0, 1)$ and $V_n = max(U_1 \dots U_n)$. We proof the following 3 quantify about the order statistics.
+\paragraph{(a)}
+\begin{align*}
+    P[V_n \leq v] &= P[\forall U_i \leq v] \\
+        &= \prod_i P[U_i \leq v] \\
+        &= v^n
+\end{align*}
+
+\paragraph{(b)}
+\begin{align*}
+    P[|V_n - 1| > \epsilon] &= P[1 - V_n > \epsilon] \\
+        &= P[V_n < 1-\epsilon] \\
+        &= (1-\epsilon)^n \\
+    \lim_{n \rightarrow \infty} (1-\epsilon)^n &= 0, \,\quad \epsilon > 0 \\
+    \text{hence} &\quad V_n \xrightarrow{p} 1
+\end{align*}
+
+\paragraph{(c)}
+\begin{align*}
+    p(V_n) &= \frac{\partial}{\partial v} v^n \\
+        &= n v^{n-1} \\
+    X &= n(1-V_n) \\
+    V_n &= 1 - \frac{1}{n}X \\
+    |\frac{\partial}{\partial X} V_n| = \frac{1}{n} \\
+    p(X) &= n(1-\frac{1}{n}X)^{n-1}\frac{1}{n} \\
+    \lim_{n \rightarrow \infty} p(X) &= \lim_{n \rightarrow \infty} (1-\frac{X}{n})^n (1-x/n)^{-1} \\
+        &= e^{-X} \\
+        &\thicksim Exp(1)
+\end{align*}
+
+\end{document}
