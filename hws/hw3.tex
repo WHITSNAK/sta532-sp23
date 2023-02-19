@@ -40,7 +40,7 @@
 }
 
 \lstset{style=mystyle}
-\graphicspath{ {.} }
+\graphicspath{ {../statics/} }
 \captionsetup{justification=raggedright, singlelinecheck=false}
 
 \author{Ryan Tang}
@@ -92,6 +92,7 @@ We can see it through the use of moment generating function considering a bivari
         &= E[e^{t_1x_1}]E[e^{t_2x_2}]\exp[\phi t_1 t_2]
 \end{align*}
 
+\newpage
 \section{Ex 7}
 \paragraph{(a)} Proof X and Z are independent standard normal
 \begin{align*}
@@ -125,6 +126,7 @@ Based on the information given $W = (X, Y, X^2, Y^2, XY)^{\intercal}$, where $(x
     Cov(X^2, Y^2) &= E[(XY)^2] - E[X^2]E[Y^2] = Var[XY] + E[XY]^2 - E[X^2]E[Y^2] = 2\rho + \rho^2 - 1 \\
 \end{align*}
 
+\newpage
 \section{EX 9}
 We like to do a simulation-based experiment to test whether $R_n/\log_2{n} \xrightarrow{p} 1$. Where $R_n$ is the longest consecutive heads in n coin flips. Following the definition of convergence in probability, the above expression is equivalent to the following in the limit, with $\epsilon$ being any positive real number.
 \begin{align*}
@@ -134,6 +136,13 @@ We like to do a simulation-based experiment to test whether $R_n/\log_2{n} \xrig
     Z_i|n, \epsilon &\thicksim_{iid} Bernoulli(p)
 \end{align*}
 
-The tricky part of experimenting is that $R_n$ is a random variable, so there is an unavoidable measurement error in the samples while evaluating the expectation. However, given $n, \epsilon$, we can draw IID samples $Z_i|n, \epsilon$, so the expectation converges to a normal distribution in the limit. Then, what is left is a trivial t-test on some confidence interval.
+The tricky part of experimenting is that $R_n$ is a random variable, so there is an unavoidable measurement error in the samples while evaluating the expectation. However, given $n, \epsilon$, we can draw IID samples $Z_i|n, \epsilon$, so the expectation converges to a normal distribution in the limit. Then, what is left is a trivial t-test on some confidence interval. The actual experiment result is shown in the below chart. We can observe the limiting behavior in which the expectation converges to 0 asymptotically.
+
+\begin{figure*}[!h]
+  \centering
+  \includegraphics[width=0.75\textwidth]{hw3-1.png}
+  \captionsetup{justification=centering}
+  \caption{$\epsilon = 0.25$, for every $n$, the experiment is repeated 100 times, which was how the confidence intervals were constructed.}
+\end{figure*}
 
 \end{document}
