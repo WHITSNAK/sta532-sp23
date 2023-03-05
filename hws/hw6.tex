@@ -92,11 +92,31 @@ First, since it maximizes over all possible $\alpha$, we run a Monte Carlo to es
   \centering
   \includegraphics[width=0.6\textwidth]{hw6-1.png}
   \captionsetup{justification=centering}
-  % \caption{}
-  % \label{fig:sufficient-logl}
 \end{figure*}
 
+\paragraph{(b)}
+Continuing from (a), Fisher's p-value is super conservative, which tries to minimize the worst-case scenario. Over the all possible range of $\alpha \in [0, \infty)$ we would report $p = 0.172$. However, if we restrict $\alpha \in [5, 30]$, and rerun the above simulation, the corresponding p-value becomes $p = 0.0037$, which centers around the smallest possible $\alpha$.
+
+\paragraph{(c)}
+Alternatively, we can calculate the plug-in p-value $P(T>0.534|\alpha=8.77) = 0.00018$, where $\alpha=8.77$ is estimated from the sample average. I think it makes sense and is more reasonable than (a). However, there are two cons. This method doesn't consider the uncertainty of the sample mean estimate. Second, the data might be generated from an entirely different, unknown, complicated underlying process but look similar to an IID Poisson, ie. autocorrelation, seasonally, nonlinear transitions. In other words, the plug-in p-value only considers the limited space under the null hypothesis $\mathcal{P}_o \in \mathbb{P}$.
+
+\paragraph{(d)}
+Of course, alternatively, we can report the conditional p-value $p = P(T>0.534|R=X_1+ \dots +X_n)$. As we know, the vector $X \thicksim \text{Multinomial}(R, \frac{1}{n}\mathbf{1}_n), R=\bar{X}\cdot n=877, n = 100$. In other words, the sufficient statistics $R$ is the sum of all $X_j$. Lastly, the conditional p-value can be estimated using Monte Carlo $P(T>0.534|R) = 0.0001$. Compared to the plug-in p-value, the conditional p-value is more comprehensive; it is a weighted average of all possible $\alpha$ under the $H_o$ because we marginalized $\alpha$ out by conditioning on the sufficient statistics. Either way, (c) or (d), both signals reject the null hypothesis and suggest a trend in the dataset.
+
+\newpage
 \section{Ex 3-5}
+\paragraph{(a)}
+Here we first define the confidence interval rule $\gamma^B(X) = [\underline{\gamma}^B(X), \overline{\gamma}^B(X)]$ for the 2.5th and 97.5th percetile of $p(\phi|X)$ posterior or the prior $p(\phi)$. We know Beta is the conjugate prior to the Binomial distribution. With the prior $\phi \thicksim Beta(1, 1)$, the posterior $\phi|X \thicksim Beta(x + 1, n-x+1)$.
+
+Now, we are interested in the prior-averaged coverage $\gamma^B$. We prove it is indeed a 95\% confidence rule. Quick note, $\phi^*$ is the unknown target parameter we like to capture. $\phi$ is the prior on it.
+\begin{align*}
+    \phi &\thicksim U(0, 1) \\
+    p(\phi) &= 1 \\
+    \int \text{coverage}(\gamma^B|\phi) p(\phi) d\phi &= E[\underline{\gamma}^B(X) \le \phi^* \le \overline{\gamma}^B(X)|\phi] \\
+        &= E[0.025 \le \phi^* \le 0.975] = 0.95 && \text{because $\phi^* \in (0, 1)$}
+\end{align*}
+
+\paragraph{(b)}
 
 
 \end{document}
