@@ -85,6 +85,7 @@ I don't think the assumed model $X_j \thicksim_{iid} \text{Poisson}(\alpha \beta
 
 Going back to whether we can assess the goodness of fit using sufficient statistics alone, I agree but only under the current context. The likelihood function is a function of sufficient statistics and parameters. The goodness of fit varies with different parameters; hence, we can find a good pair of parameters $\theta$ that fits the given sufficient statistics. However, such assessment is only constrained under the specified model space, in our case $X_j \thicksim_{iid} \text{Poisson}(\alpha \beta^{j-1})$. Other models can have different sufficient statistics or have none at all.
 
+\newpage
 \section{Chapter 3 Ex 2}
 \paragraph{(a)} Poisson and Multinomial Proofs
 \begin{align*}
@@ -98,7 +99,6 @@ Going back to whether we can assess the goodness of fit using sufficient statist
         &\thicksim \text{Multinomial}(X|n=\sum X_i, p=\frac{1}{n}\mathbf{1}_n)
 \end{align*}
 
-\newpage
 \paragraph{(b)} 
 We have the test statistics $T = \frac{\sum (X_i - \bar{X})^2}{\bar{X}} = (n-1)^{-1} S^2/\bar{X}$ where $S^2 = (n-1)^{-1} \sum(X_i - \bar{X})^2$. We can prove $E(T|\lambda) = n-1$ as follows.
 \begin{align*}
@@ -120,8 +120,9 @@ Using the test statistics $T = (n-1)^{-1} S^2/\bar{X}$ makes sense for testing i
 The test statistic is only concerned with the first 2 moments. If our alternative has anything to do with the skewness or something similar, rejecting the null due to large $T$ doesn't make much sense.
 
 \paragraph{(e)}
-We know the null hypothesis $H_0$ implies the test statistic $T \thicksim \mathcal{X}^2_{k}, E[T] = k$. Given $R = 957$ and $S^2 = 46.02$, we can back out the degree of freedom $k = 20.795$. Hence $\text{Pr}[T>t_{obs}] = 0.9999$, we are not rejecting the null.
+We know the null hypothesis $H_0$ implies the test statistic $T \Rightarrow \mathcal{X}^2_{k}$ in the limit under some conditions. Given $R = 957, n=30$, and $S^2 = 46.02$, we can calculate $\text{Pr}[\mathcal{X}^2_{30-1}>t_{obs}] = 0.058$.
 
+\newpage
 \section{Chapter 3 Ex 3}
 \paragraph{(a)}
 In exercise 2, we have already proved $X|R \thicksim \text{Mn}(X|n=R, p=\frac{1}{n}\mathbf{1}_n), R = \sum X_i$. Hence, $R$ is the sufficient statistic of the likelihood.
@@ -132,10 +133,11 @@ Given $R=957, n=30$, the observed test statistic is $t_{obs} = 41.84$. We can si
   \centering
   \includegraphics[width=0.6\textwidth]{hw5-2.png}
   \captionsetup{justification=centering}
-  \caption{The discrete estimation of the un-normalized log-likelihood function $g(T(x), \theta)$ using the sufficient statistics. We only plotted the points in that we have at least 15\% of the maximum log-likelihood score to highlight the region.}
+  \caption{The test statistic distribution under null hypothesis vs. the observed test statistic under 10k samples.}
   \label{fig:sufficient-logl}
 \end{figure*}
 
 \paragraph{(c)}
+$T \Rightarrow \mathcal{X}^2_{k}$ only happens in the limit; hence, the conditional p-value $P[T>t_{obs}|R=r]$ shouldn't always close to the asymptotic p-value $P[{X}^2_{k} > t_{obs}]$. The argument is obvious because the asymptotic p-value has sufficient statistics marginalized out, and the former doesn't. Hence, when we have a small sample size, the two diverge. Second, Poisson is a discrete distribution. If we have $\lambda \rightarrow 0$, the differences between the two also widen.
 
 \end{document}
