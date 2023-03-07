@@ -108,15 +108,26 @@ Of course, alternatively, we can report the conditional p-value $p = P(T>0.534|R
 \paragraph{(a)}
 Here we first define the confidence interval rule $\gamma^B(X) = [\underline{\gamma}^B(X), \overline{\gamma}^B(X)]$ for the 2.5th and 97.5th percetile of $p(\phi|X)$ posterior or the prior $p(\phi)$. We know Beta is the conjugate prior to the Binomial distribution. With the prior $\phi \thicksim Beta(1, 1)$, the posterior $\phi|X \thicksim Beta(x + 1, n-x+1)$.
 
-Now, we are interested in the prior-averaged coverage $\gamma^B$. We prove it is indeed a 95\% confidence rule. Quick note, $\phi^*$ is the unknown target parameter we like to capture. $\phi$ is the prior on it.
+Now, we are interested in the prior-averaged coverage $\gamma^B$. We prove it is indeed a 95\% confidence rule. Quick note, $\gamma^B$ follows $Beta(1,1)$'s 95th confidence interval, which is a uniform distribution.
 \begin{align*}
     \phi &\thicksim U(0, 1) \\
     p(\phi) &= 1 \\
-    \int \text{coverage}(\gamma^B|\phi) p(\phi) d\phi &= E[\underline{\gamma}^B(X) \le \phi^* \le \overline{\gamma}^B(X)|\phi] \\
-        &= E[0.025 \le \phi^* \le 0.975] = 0.95 && \text{because $\phi^* \in (0, 1)$}
+    \int \text{coverage}(\gamma^B|\phi) p(\phi) d\phi
+        &= E[E[\text{coverage}(\gamma^B, \phi)|\phi]] \\
+        &= E[Pr(\underline{\gamma^B} \le \phi \le \overline{\gamma^B})|\phi] \\
+        &= E[0.95|\phi] \\
+        &= 0.95
 \end{align*}
 
 \paragraph{(b)}
+Going further with the Bayesian confidence interval on the posterior $\phi|X \thicksim Beta(x+1, n-x+1)$. Here, we plot the Monte Carlo estimate of the coverage ratio for each $\phi^*$. Under $n=500$ sample size, the posterior confidence interval coverage does as well as we expected, except on two special points, $\phi^* = 0, 1$. Due to the bias in the prior, we need $n \rightarrow \infty$ to have the 95th posterior confidence interval include 0 or 1. Other than these two singularities, I would say the confidence coefficient of $\gamma^B = 0.95$.
+\begin{figure*}[!h]
+  \centering
+  \includegraphics[width=0.6\textwidth]{hw6-2.png}
+  \captionsetup{justification=centering}
+\end{figure*}
 
+\paragraph{(c)}
+Certainly, the prior of $\phi$ plays a significant role in determining the usefulness of the confidence interval rule $\gamma^B$. Two salient, extreme, examples are, taking $n=500$, priors either with $\phi \thicksim Beta(\infty, 1)$ or $\phi \thicksim Beta(1, \infty)$. It is simple to see the coverage ratio of these two priors will be a singularity of 100\% when the true $\phi^*$ is either 0 or 1 and 0\% coverage everywhere else.
 
 \end{document}
