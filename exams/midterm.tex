@@ -6,6 +6,7 @@
 \usepackage{amsthm}
 \usepackage{graphicx}
 \usepackage{listings}
+\usepackage{mathrsfs}
 \usepackage[font=scriptsize]{caption}
 \usepackage{subcaption}
 \usepackage{xcolor}
@@ -137,5 +138,32 @@ defined above. However, as we proved in (Q7), by conditional on $R$, the likelih
         U|k &\thicksim \text{Dir}(k\matbf{1}_n)
 \end{align*}
 The estimation of the p-value becomes integral through the composition sampling and can be estimated using Monte Carlo. Under $k^* = 100$ assumption, the $t_{obs} = 57.897$ and $r_{obs} = 1164$. The test statistics distribution is plotted below, and the Monte Carlo estimate of the conditional p-value is $0.148136$.
+
+\begin{figure*}[!h]
+  \centering
+  \includegraphics[width=0.55\textwidth]{midterm-1.png}
+  \captionsetup{justification=centering}
+\end{figure*}
+
+\newpage
+\section{Q9}
+We prove the rule $\delta(x_{obs})$: "rejects $H_o: k = k^*$ if $p(x_{obs}|k^*) \le 2.5\%$" indeed has Type I error rate of $\alpha = 2.5\%$ at any $k^* > 0$ fixed.
+\begin{align*}
+    E[\delta(x_{obs}) = H_1|H_o:k=k^*] &= E[I(p(x_{obs}|k^* \le 2.5\%) | H_o] \\
+        &= P(p(x_{obs}|k^*) \le 2.5\% | H_o) \\
+        &= P(x_{obs} \le F^{-1}(2.5\%) | H_o) \\
+        &= F(F^{-1}(2.5\%)) = 2.5\%
+\end{align*}
+
+\section{Q10}
+Here we define the interval rule for $k$, where $F^{-1}(\cdot, k^*)$ is the quantile function of the conditional p-value $p(x_{obs}|k^*)$.
+\begin{align*}
+    \gamma(X) &= [\underline{\gamma}(X), \overline{\gamma}(X)] \\
+    \overline{\gamma}(X) &= \mathop{\arg\max}_{k^*} F^{-1}(0.025, k^*) \\
+    \underline{\gamma}(X) &= \mathop{\arg\min}_{k^*} F^{-1}(0.975, k^*)
+\end{align*}
+To claim $\gamma(X)$ is a 95\% confidence interval rule for the Negative Binomial model is ebulliently for us to show for any $x_{obs} \in \mathscr{X}$ the minimum coverage is 95\%. The confidence rule $\gamma$ requires a quantile estimation of the test statistics $T$'s distribution over all possible ranges of $k^*$ and $x_{obs}$, which I believe is analytically intractable. Hence, instead, I brutal force for a small region of the entire space to show a counter-example. Especially we can see from the below plot the interval rule performances are extremely poor when $\tau \rightarrow 0$.
+
+
 
 \end{document}
