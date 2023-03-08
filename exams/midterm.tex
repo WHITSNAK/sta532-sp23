@@ -162,8 +162,14 @@ Here we define the interval rule for $k$, where $F^{-1}(\cdot, k^*)$ is the quan
     \overline{\gamma}(X) &= \mathop{\arg\max}_{k^*} F^{-1}(0.025, k^*) \\
     \underline{\gamma}(X) &= \mathop{\arg\min}_{k^*} F^{-1}(0.975, k^*)
 \end{align*}
-To claim $\gamma(X)$ is a 95\% confidence interval rule for the Negative Binomial model is ebulliently for us to show for any $x_{obs} \in \mathscr{X}$ the minimum coverage is 95\%. The confidence rule $\gamma$ requires a quantile estimation of the test statistics $T$'s distribution over all possible ranges of $k^*$ and $x_{obs}$, which I believe is analytically intractable. Hence, instead, I brutal force for a small region of the entire space to show a counter-example. Especially we can see from the below plot the interval rule performances are extremely poor when $\tau \rightarrow 0$.
+To claim $\gamma(X)$ is a 95\% confidence interval rule for the Negative Binomial model is ebulliently for us to show for any $x_{obs} \in \mathscr{X}$ the minimum coverage is 95\%. The confidence rule $\gamma$ requires a quantile estimation of the test statistics $T$'s distribution over all possible ranges of $k^*$ and $x_{obs}$, which I believe is analytically intractable. Hence, I brutal-forced a small region of the entire space to show an example for an engineer's proof. Mainly, I simulated many synthetic datasets through the Negative Binomial model so we know the ground truth. I used the composite sampling of Multinomial and Dirchilet to estimate the distribution of $T$, then estimated the interval $\gamma(x_{obs})$ using a discrete approximation of the quantile. The coverage is estimated across randomly sampled synthetic datasets with $\tau \thicksim U(0.0012, 0.05), \mu=100, n=36$. 
 
+The below plot showcases the result after 2,530 Monte Carlo samples --- it is quite expensive to evaluate at each step. The mean Monte Carlo estimated coverage ratio is $93.20\% \pm 0.98\%$ with its 95th Monte Carlo estimated interval. 
 
+\begin{figure*}[!h]
+  \centering
+  \includegraphics[width=0.55\textwidth]{midterm-2.png}
+  \captionsetup{justification=centering}
+\end{figure*}
 
 \end{document}
